@@ -1,0 +1,1 @@
+export const USERS_USERVICE_URL = "http://localhost:8081"
