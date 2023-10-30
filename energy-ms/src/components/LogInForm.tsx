@@ -24,7 +24,7 @@ export default function LogInForm(): React.JSX.Element {
             const tokenPayload = AuthenticationUtils.extractJwtPayload(jwtToken)
             AuthenticationUtils.setLoggedInUserData(tokenPayload.sub, tokenPayload.role)
             navigate(
-                tokenPayload.role.toUpperCase() === "ADMIN" ? "/admin-home" : "/user-home"
+                tokenPayload.role.toUpperCase() === "ADMIN" ? "/adminHome" : "/userHome"
             )
         }
         setLoading(false)

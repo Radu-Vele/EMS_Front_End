@@ -9,7 +9,6 @@ export class AuthenticationUtils {
     static logOut(): void {
         localStorage.clear()
         sessionStorage.clear()
-        window.location.reload()
     }
 
     static setToken(token: string) {
@@ -19,5 +18,15 @@ export class AuthenticationUtils {
     static extractJwtPayload(jwtToken: string): JwtPayload {
         const payload = jwtToken.split('.')[1]
         return JSON.parse(atob(payload))
+    }
+
+    static isUserLoggedIn(): boolean {
+        let role = sessionStorage.getItem("role")
+        return role === "user" || role === "USER"
+    }
+
+    static isAdminLoggedIn(): boolean {
+        let role = sessionStorage.getItem("role")
+        return role === "admin" || role === "ADMIN"
     }
 }
