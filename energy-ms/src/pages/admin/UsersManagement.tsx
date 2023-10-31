@@ -54,7 +54,7 @@ export function UsersManagement(): React.JSX.Element {
                 </Button>
             <Divider />
             </Grid>
-            <Grid xs = {12}>
+            <Grid item xs = {12}>
                 <Divider />
             </Grid>
             <Grid item hidden={!listAll}>

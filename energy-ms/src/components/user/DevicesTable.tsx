@@ -12,7 +12,7 @@ export type DeviceInfo = {
 
 export function DevicesTable(): React.JSX.Element {
     const [devicesList, setDevicesList] = useState([])
-    //TODO: optimize calls (save user ID in local storage or so)
+    //TODO: optimize calls (save user ID in local storage or so) - pass it as argument
     useEffect(() => {
         let unmounted = false
         const fetchData = async () => {

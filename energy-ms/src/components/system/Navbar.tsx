@@ -23,6 +23,7 @@ export default function Navbar(): React.JSX.Element {
                         <Button component={Link} to="/adminHome"  sx={{ my: 2, color: 'white', display: 'block' }}> Home</Button>
                         <Button component={Link} to="/usersManagement"  sx={{ my: 2, color: 'white', display: 'block' }}> Manage users</Button>
                         <Button component={Link} to="/devicesManagement"  sx={{ my: 2, color: 'white', display: 'block' }}> Manage devices</Button>
+                        <Button component={Link} to="/userDevices"  sx={{ my: 2, color: 'white', display: 'block' }}> Users & devices</Button>
                     </>
                     )}
                     {(isUserLoggedIn || isAdminLoggedIn) && (

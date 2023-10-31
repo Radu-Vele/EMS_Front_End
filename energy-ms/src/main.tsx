@@ -12,6 +12,7 @@ import PathErrorPage from './pages/PathErrorPage';
 import UserHome from './pages/user/UserHome';
 import { UsersManagement } from './pages/admin/UsersManagement';
 import { DevicesManagement } from './pages/admin/DevicesManagement';
+import { UserDevicesManagement } from './pages/admin/UserDevicesManagement';
 
 const router = createBrowserRouter([
   {
@@ -51,6 +52,11 @@ const router = createBrowserRouter([
       {
         path: "/devicesManagement",
         element: <DevicesManagement />,
+        errorElement: <PathErrorPage />
+      },
+      {
+        path: "/userDevices",
+        element: <UserDevicesManagement />,
         errorElement: <PathErrorPage />
       }
     ]
