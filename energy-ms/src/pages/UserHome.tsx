@@ -12,20 +12,18 @@ export default function UserHome(): React.JSX.Element {
     }
 
     return (
-        <>
-        <Grid container p={2}>
-            <Grid item xs={12}>
-                <UserDetailsBox />
-            </Grid>
-            <Grid item xs={12}>
-                <Button variant="contained" onClick={toggleShowDevices}>
-                    View my devices
-                </Button>
-            </Grid>
-            <Grid item xs={12} hidden={!showDevices}>
-                <DevicesTable/>
-            </Grid>
+    <Grid container p={2}>
+        <Grid item xs={12}>
+            <UserDetailsBox />
         </Grid>
-        </>
+        <Grid item xs={12}>
+            <Button variant="contained" onClick={toggleShowDevices}>
+                View my devices
+            </Button>
+        </Grid>
+        <Grid item xs={12} hidden={!showDevices}>
+            <DevicesTable/>
+        </Grid>
+    </Grid>
     )
 }

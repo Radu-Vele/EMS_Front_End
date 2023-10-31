@@ -1,7 +1,7 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 
-import { Route, createBrowserRouter, createRoutesFromElements, RouterProvider } from 'react-router-dom';
+import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import GuestHome from './pages/GuestHome';
 import LogIn from './pages/LogIn';
 import SignUp from './pages/SignUp';
@@ -10,6 +10,8 @@ import AdminHome from './pages/AdminHome';
 import { CssBaseline } from '@mui/material';
 import PathErrorPage from './pages/PathErrorPage';
 import UserHome from './pages/UserHome';
+import { UsersManagement } from './pages/UsersManagement';
+import { DevicesManagement } from './pages/DevicesManagement';
 
 const router = createBrowserRouter([
   {
@@ -39,6 +41,16 @@ const router = createBrowserRouter([
       {
         path: "/userHome",
         element: <UserHome />,
+        errorElement: <PathErrorPage />
+      },
+      {
+        path: "/usersManagement",
+        element: <UsersManagement />,
+        errorElement: <PathErrorPage />
+      },
+      {
+        path: "/devicesManagement",
+        element: <DevicesManagement />,
         errorElement: <PathErrorPage />
       }
     ]

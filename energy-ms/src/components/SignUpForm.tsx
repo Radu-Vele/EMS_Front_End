@@ -1,10 +1,10 @@
 import { LoadingButton } from "@mui/lab";
-import { Paper, Box, Grid, TextField, Typography } from "@mui/material";
-import React, { FormEvent, useState } from "react";
+import { Paper, Box, Grid, TextField } from "@mui/material";
+import React, { FormEvent, useEffect, useState } from "react";
 import { SignUpService } from "../api/guest/SignUpService";
 import { useNavigate } from "react-router-dom";
 
-export default function SignUpForm(): React.JSX.Element {
+export default function SignUpForm({isAdmin=false, goToLoginOnSubmit=true}:{isAdmin?:boolean, goToLoginOnSubmit?:boolean}): React.JSX.Element {
     const [loading, setLoading] = useState(false)
     const [newUserInfo, setNewUserInfo] = useState({
         emailAddress: "",
@@ -12,11 +12,16 @@ export default function SignUpForm(): React.JSX.Element {
         lastName: "",
         password: "",
         passwordRepeated: "",
-        isAdmin: false
+        isAdmin: isAdmin
     })
+
+    useEffect(() => {
+        setNewUserInfo({...newUserInfo, isAdmin: isAdmin})
+    }, [isAdmin])
     const navigate = useNavigate()
 
     const handleSubmit = async (event: FormEvent) => {
+        console.log(isAdmin)
         event.preventDefault()
 
         setLoading(true);
@@ -26,7 +31,9 @@ export default function SignUpForm(): React.JSX.Element {
         }
         else {
             setLoading(false)
-            navigate("/login")
+            if(goToLoginOnSubmit) {
+                navigate("/login")
+            }
         }
         setLoading(false)
     }
@@ -35,11 +42,6 @@ export default function SignUpForm(): React.JSX.Element {
         <Paper elevation={1} style={{ padding: '10px'}}>
             <Box component="form" onSubmit={handleSubmit}>
                 <Grid container spacing={3} justifyContent="center" alignItems="center">
-                    <Grid item xs={11}>
-                        <Typography variant="h5">
-                            Register to save energy! ⚡
-                        </Typography>
-                    </Grid>
                     <Grid item xs={11}>
                         <TextField
                             label="Email"

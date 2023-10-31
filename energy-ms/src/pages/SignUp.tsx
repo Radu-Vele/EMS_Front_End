@@ -10,7 +10,7 @@ export default function SignUp(): React.JSX.Element {
                 justifyContent="center"
                 height="80vh"
         >
-            <SignUpForm />
+            <SignUpForm isAdmin={false}/>
         </Box>
     )
 }
