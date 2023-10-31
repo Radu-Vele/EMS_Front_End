@@ -1,13 +1,13 @@
 import { TableContainer, TableHead, TableRow, TableCell, TableBody } from "@mui/material"
 import React, { useEffect, useState } from "react"
-import { UserDeviceListService } from "../api/users/UserDeviceListService"
-import { UserIdService } from "../api/users/UserIdService"
+import { UserDeviceListService } from "../../api/users/UserDeviceListService"
+import { UserIdService } from "../../api/users/UserIdService"
 
 export type DeviceInfo = {
     id: string,
     description: string,
     address: string,
-    maxEnergyConsumption: string
+    maxHourlyEnergyConsumption: string
 }
 
 export function DevicesTable(): React.JSX.Element {
@@ -26,9 +26,9 @@ export function DevicesTable(): React.JSX.Element {
         }
     }, [])
 
-    return (
+    return ( // TODO: fix table warning
         <TableContainer>
-            <TableHead>
+            <TableHead> 
                 <TableRow>
                     <TableCell>Id</TableCell>
                     <TableCell>Description</TableCell>
@@ -37,7 +37,7 @@ export function DevicesTable(): React.JSX.Element {
                 </TableRow>
             </TableHead>
             <TableBody>
-                {devicesList.map((device) => (
+                {devicesList.map((device: DeviceInfo) => (
                     <TableRow>
                         <TableCell>{device.id}</TableCell>
                         <TableCell>{device.description}</TableCell>

@@ -1,8 +1,8 @@
 import { Grid, Paper, TextField, Box, Typography } from "@mui/material"
 import { LoadingButton } from "@mui/lab"
 import { FormEvent, useState } from "react"
-import { AuthenticateUser } from "../api/auth/AuthenticateUser"
-import { AuthenticationUtils } from "../utils/auth/AuthenticationUtils"
+import { AuthenticateUser } from "../../api/auth/AuthenticateUser"
+import { AuthenticationUtils } from "../../utils/auth/AuthenticationUtils"
 import { useNavigate } from "react-router-dom"
 
 export default function LogInForm(): React.JSX.Element {

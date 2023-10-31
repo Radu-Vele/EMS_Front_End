@@ -1,5 +1,5 @@
 import { AppBar, Button, Toolbar, Typography } from "@mui/material";
-import { AuthenticationUtils } from "../utils/auth/AuthenticationUtils";
+import { AuthenticationUtils } from "../../utils/auth/AuthenticationUtils";
 import { Link, Outlet, useNavigate } from "react-router-dom";
 
 export default function Navbar(): React.JSX.Element {

@@ -1,7 +1,7 @@
 import { LoadingButton } from "@mui/lab";
 import { Paper, Box, Grid, TextField } from "@mui/material";
 import React, { FormEvent, useEffect, useState } from "react";
-import { SignUpService } from "../api/guest/SignUpService";
+import { SignUpService } from "../../api/guest/SignUpService";
 import { useNavigate } from "react-router-dom";
 
 export default function SignUpForm({isAdmin=false, goToLoginOnSubmit=true}:{isAdmin?:boolean, goToLoginOnSubmit?:boolean}): React.JSX.Element {

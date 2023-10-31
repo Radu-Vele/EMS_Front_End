@@ -1,3 +1,8 @@
 import { USERS_PREFIX } from "./UsersRequestEndpoints"
 export const DEVICES_PREFIX = "/devices"
 export const GET_ALL_USER_DEVICES = USERS_PREFIX + "/getAllDevices"
+export const GET_ALL_DEVICES = DEVICES_PREFIX + "/getAll"
+export const DELETE_DEVICE = DEVICES_PREFIX + "/deleteById"
+export const CREATE_DEVICE = DEVICES_PREFIX + "/create"
+export const EDIT_DEVICE = DEVICES_PREFIX + "/edit"
+export const GET_DETAILS_BY_ID = DEVICES_PREFIX + "/getDetailsById"

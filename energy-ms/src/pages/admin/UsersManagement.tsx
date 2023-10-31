@@ -1,9 +1,9 @@
-import { Button, Grid } from "@mui/material";
+import { Button, Divider, Grid, Typography } from "@mui/material";
 import { useState } from "react";
-import { UserRegister } from "../components/UserRegister";
-import { UsersTable } from "../components/UsersTable";
-import { UsersEdit } from "../components/UsersEdit";
-import { UsersDelete } from "../components/UsersDelete";
+import { UserRegister } from "../../components/admin/user_manage/UserRegister";
+import { UsersTable } from "../../components/admin/user_manage/UsersTable";
+import { UsersEdit } from "../../components/admin/user_manage/UsersEdit";
+import { UsersDelete } from "../../components/admin/user_manage/UsersDelete";
 
 export function UsersManagement(): React.JSX.Element {
     const [listAll, setListAll] = useState(false)
@@ -15,7 +15,7 @@ export function UsersManagement(): React.JSX.Element {
         <Grid container p ={2}>
             <Grid item xs={3}>
                 <Button onClick={() => {
-                    setListAll(!setListAll)
+                    setListAll(!listAll)
                     setEditUser(false)
                     setRegisterUser(false)
                     setDeleteUser(false)
@@ -52,6 +52,10 @@ export function UsersManagement(): React.JSX.Element {
                 }}>
                     Delete user
                 </Button>
+            <Divider />
+            </Grid>
+            <Grid xs = {12}>
+                <Divider />
             </Grid>
             <Grid item hidden={!listAll}>
                 <UsersTable />
@@ -64,6 +68,11 @@ export function UsersManagement(): React.JSX.Element {
             </Grid>
             <Grid item hidden={!deleteUser}>
                 <UsersDelete />
+            </Grid>
+            <Grid item hidden={!(!deleteUser && !registerUser && !listAll && !editUser)}>
+                <Typography>
+                    Take user-related actions by clicking on the buttons above
+                </Typography>
             </Grid>
         </Grid>
     )

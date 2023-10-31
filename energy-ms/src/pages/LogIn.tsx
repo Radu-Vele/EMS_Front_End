@@ -1,5 +1,5 @@
 import { Box } from "@mui/material";
-import LogInForm from "../components/LogInForm";
+import LogInForm from "../components/system/LogInForm";
 
 export default function LogIn(): React.JSX.Element {
     return (

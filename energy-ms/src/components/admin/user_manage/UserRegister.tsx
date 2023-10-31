@@ -1,5 +1,5 @@
 import { useState } from "react";
-import SignUpForm from "./SignUpForm";
+import SignUpForm from "../../system/SignUpForm";
 import { Checkbox, FormControlLabel, FormGroup } from "@mui/material";
 
 export function UserRegister(): React.JSX.Element {

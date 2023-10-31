@@ -1,7 +1,7 @@
 import { Box, Divider, ListItem, ListItemButton, ListItemIcon, ListItemText, Typography } from "@mui/material";
 import PersonIcon  from "@mui/icons-material/Person" 
 import React, { useEffect, useState } from "react";
-import { UserDetailsService } from "../api/users/UserDetailsService";
+import { UserDetailsService } from "../../api/users/UserDetailsService";
 import { EmailRounded } from "@mui/icons-material";
 
 export function UserDetailsBox(): React.JSX.Element {

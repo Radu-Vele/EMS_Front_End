@@ -1,7 +1,7 @@
 import { Button, Grid } from "@mui/material";
 import React, { useState } from "react";
-import { UserDetailsBox } from "../components/UserDetailsBox";
-import { DevicesTable } from "../components/DevicesTable";
+import { UserDetailsBox } from "../../components/user/UserDetailsBox";
+import { DevicesTable } from "../../components/user/DevicesTable";
 
 export default function UserHome(): React.JSX.Element {
     const [showDevices, setShowDevices] = useState(false)

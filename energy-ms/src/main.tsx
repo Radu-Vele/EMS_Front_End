@@ -5,13 +5,13 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import GuestHome from './pages/GuestHome';
 import LogIn from './pages/LogIn';
 import SignUp from './pages/SignUp';
-import Navbar from './components/Navbar';
-import AdminHome from './pages/AdminHome';
+import Navbar from './components/system/Navbar';
+import AdminHome from './pages/admin/AdminHome';
 import { CssBaseline } from '@mui/material';
 import PathErrorPage from './pages/PathErrorPage';
-import UserHome from './pages/UserHome';
-import { UsersManagement } from './pages/UsersManagement';
-import { DevicesManagement } from './pages/DevicesManagement';
+import UserHome from './pages/user/UserHome';
+import { UsersManagement } from './pages/admin/UsersManagement';
+import { DevicesManagement } from './pages/admin/DevicesManagement';
 
 const router = createBrowserRouter([
   {

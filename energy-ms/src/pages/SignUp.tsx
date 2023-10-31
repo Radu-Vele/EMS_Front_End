@@ -1,5 +1,5 @@
 import { Box } from "@mui/material";
-import SignUpForm from "../components/SignUpForm";
+import SignUpForm from "../components/system/SignUpForm";
 
 export default function SignUp(): React.JSX.Element {
     return (
