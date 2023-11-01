@@ -1,7 +1,7 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 
-import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import { createBrowserRouter, redirect, RouterProvider } from 'react-router-dom';
 import GuestHome from './pages/GuestHome';
 import LogIn from './pages/LogIn';
 import SignUp from './pages/SignUp';
@@ -13,6 +13,8 @@ import UserHome from './pages/user/UserHome';
 import { UsersManagement } from './pages/admin/UsersManagement';
 import { DevicesManagement } from './pages/admin/DevicesManagement';
 import { UserDevicesManagement } from './pages/admin/UserDevicesManagement';
+import { ProtectedRouteAdmin } from './routes/ProtectedRouteAdmin';
+import { ProtectedRouteUser } from './routes/ProtectedRouteUser';
 
 const router = createBrowserRouter([
   {
@@ -36,27 +38,27 @@ const router = createBrowserRouter([
       },
       {
         path: "/adminHome",
-        element: <AdminHome />,
+        element: <ProtectedRouteAdmin redirectPath={"/login"} children={<AdminHome />}/>,
         errorElement: <PathErrorPage />
       },
       {
         path: "/userHome",
-        element: <UserHome />,
+        element: <ProtectedRouteUser redirectPath={"/login"} children={<UserHome />} />,
         errorElement: <PathErrorPage />
       },
       {
         path: "/usersManagement",
-        element: <UsersManagement />,
+        element: <ProtectedRouteAdmin redirectPath={"/login"} children={<UsersManagement />}/>,
         errorElement: <PathErrorPage />
       },
       {
         path: "/devicesManagement",
-        element: <DevicesManagement />,
+        element: <ProtectedRouteAdmin redirectPath={"/login"} children={<DevicesManagement />}/>,
         errorElement: <PathErrorPage />
       },
       {
         path: "/userDevices",
-        element: <UserDevicesManagement />,
+        element:  <ProtectedRouteAdmin redirectPath={"/login"} children={<UserDevicesManagement />}/>,
         errorElement: <PathErrorPage />
       }
     ]
