@@ -15,6 +15,7 @@ import { DevicesManagement } from './pages/admin/DevicesManagement';
 import { UserDevicesManagement } from './pages/admin/UserDevicesManagement';
 import { ProtectedRouteAdmin } from './routes/ProtectedRouteAdmin';
 import { ProtectedRouteUser } from './routes/ProtectedRouteUser';
+import { WebSocketProvider } from './components/system/WebSocket';
 
 const router = createBrowserRouter([
   {
@@ -68,6 +69,8 @@ const router = createBrowserRouter([
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <CssBaseline />
-    <RouterProvider router={router}/>
+    <WebSocketProvider>
+      <RouterProvider router={router}/>
+    </WebSocketProvider>
   </React.StrictMode>,
 )

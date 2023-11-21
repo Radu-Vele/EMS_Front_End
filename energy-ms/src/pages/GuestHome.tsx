@@ -1,8 +1,5 @@
 import { Typography, 
-    Button, 
-    Grid,
     Box} from '@mui/material'
-import { useNavigate } from 'react-router-dom'
 
 export default function GuestHome(): React.JSX.Element {
     return (

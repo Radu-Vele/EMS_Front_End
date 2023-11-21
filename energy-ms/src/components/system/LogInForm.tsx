@@ -1,15 +1,19 @@
 import { Grid, Paper, TextField, Box, Typography } from "@mui/material"
 import { LoadingButton } from "@mui/lab"
-import { FormEvent, useState } from "react"
+import { FormEvent, useEffect, useState } from "react"
 import { AuthenticateUser } from "../../api/auth/AuthenticateUser"
 import { AuthenticationUtils } from "../../utils/auth/AuthenticationUtils"
 import { useNavigate } from "react-router-dom"
+import { useWebSocketContext } from "./WebSocket"
+import { UserIdService } from "../../api/users/UserIdService"
+import useWebSocket from "react-use-websocket"
 
 export default function LogInForm(): React.JSX.Element {
     const navigate = useNavigate()
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const [loading, setLoading] = useState(false)
+    const { socketUrl, setSocketUrl } = useWebSocketContext()
 
     const handleLogin = async (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault()
@@ -22,7 +26,18 @@ export default function LogInForm(): React.JSX.Element {
             const jwtToken = response.data.token
             AuthenticationUtils.setToken('Bearer ' + jwtToken)
             const tokenPayload = AuthenticationUtils.extractJwtPayload(jwtToken)
-            AuthenticationUtils.setLoggedInUserData(tokenPayload.sub, tokenPayload.role)
+            const userIdResponse = await UserIdService()
+            if (userIdResponse.status !== 200) {
+                AuthenticationUtils.setLoggedInUserData(tokenPayload.sub, tokenPayload.role, '')                
+            }
+            else {
+                AuthenticationUtils.setLoggedInUserData(tokenPayload.sub, tokenPayload.role, userIdResponse.data)
+            }
+
+            if (tokenPayload.role === "USER") {
+                setSocketUrl(`ws://localhost:8083/websocket?userId=${userIdResponse.data}`)
+            }
+            
             navigate(
                 tokenPayload.role.toUpperCase() === "ADMIN" ? "/adminHome" : "/userHome"
             )

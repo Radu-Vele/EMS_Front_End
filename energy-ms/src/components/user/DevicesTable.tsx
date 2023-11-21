@@ -37,7 +37,7 @@ export function DevicesTable(): React.JSX.Element {
                 </TableRow>
             </TableHead>
             <TableBody>
-                {devicesList.map((device: DeviceInfo) => (
+                {devicesList.map((device: DeviceInfo) => ( // TODO: handle map error
                     <TableRow>
                         <TableCell>{device.id}</TableCell>
                         <TableCell>{device.description}</TableCell>

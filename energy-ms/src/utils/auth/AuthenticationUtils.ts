@@ -1,9 +1,10 @@
 import { JwtPayload } from "../../types/Authentication"
 
 export class AuthenticationUtils {
-    static setLoggedInUserData(username: string, role: string): void {
+    static setLoggedInUserData(username: string, role: string, id: string): void {
         sessionStorage.setItem("authUser", username)
         sessionStorage.setItem("role", role)
+        sessionStorage.setItem("userId", id)
     }
 
     static logOut(): void {
