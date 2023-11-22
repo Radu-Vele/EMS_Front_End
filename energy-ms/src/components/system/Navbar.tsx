@@ -1,13 +1,11 @@
 import { AppBar, Button, Toolbar, Typography } from "@mui/material";
 import { AuthenticationUtils } from "../../utils/auth/AuthenticationUtils";
 import { Link, Outlet, useNavigate } from "react-router-dom";
-import { useWebSocketContext } from "./WebSocket";
 
 export default function Navbar(): React.JSX.Element {
     const isUserLoggedIn = AuthenticationUtils.isUserLoggedIn()
     const isAdminLoggedIn = AuthenticationUtils.isAdminLoggedIn()
     const navigate = useNavigate()
-    const { setSocketUrl } = useWebSocketContext()
 
     return(
         <>
@@ -32,8 +30,6 @@ export default function Navbar(): React.JSX.Element {
                     <>
                         <Button sx={{ my: 2, color: 'white', display: 'block' }} onClick={() => {
                             AuthenticationUtils.logOut()
-                            // close web socket
-                            setSocketUrl('')
                             navigate("/")
                         }
                         }>

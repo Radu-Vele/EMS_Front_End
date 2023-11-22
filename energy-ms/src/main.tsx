@@ -69,8 +69,6 @@ const router = createBrowserRouter([
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <CssBaseline />
-    <WebSocketProvider>
-      <RouterProvider router={router}/>
-    </WebSocketProvider>
+    <RouterProvider router={router}/>
   </React.StrictMode>,
 )

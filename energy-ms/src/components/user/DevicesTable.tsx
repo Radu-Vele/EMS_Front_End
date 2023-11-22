@@ -37,14 +37,14 @@ export function DevicesTable(): React.JSX.Element {
                 </TableRow>
             </TableHead>
             <TableBody>
-                {devicesList.map((device: DeviceInfo) => ( // TODO: handle map error
+                {devicesList !== undefined? devicesList.map((device: DeviceInfo) => ( // TODO: handle map error
                     <TableRow>
                         <TableCell>{device.id}</TableCell>
                         <TableCell>{device.description}</TableCell>
                         <TableCell>{device.address}</TableCell>
                         <TableCell>{device.maxHourlyEnergyConsumption}</TableCell>
                     </TableRow>
-                ))}
+                )) : <></>}
             </TableBody>
         </TableContainer>
     )

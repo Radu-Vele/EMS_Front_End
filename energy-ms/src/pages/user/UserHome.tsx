@@ -1,13 +1,12 @@
-import { Button, Grid } from "@mui/material";
+import { Button, Grid, Typography } from "@mui/material";
 import React, { useState } from "react";
 import { UserDetailsBox } from "../../components/user/UserDetailsBox";
 import { DevicesTable } from "../../components/user/DevicesTable";
-import { useWebSocketContext } from "../../components/system/WebSocket";
+import { NotificationBox } from "../../components/user/NotificationsBox";
 
 export default function UserHome(): React.JSX.Element {
     const [showDevices, setShowDevices] = useState(false)
     const [userId, setUserId] = useState('')
-    const { socketUrl, setSocketUrl, webSocket } = useWebSocketContext();
 
     const toggleShowDevices = (): void => {
         setShowDevices(!showDevices)
@@ -25,6 +24,11 @@ export default function UserHome(): React.JSX.Element {
         </Grid>
         <Grid item xs={12} hidden={!showDevices}>
             <DevicesTable/>
+        </Grid>
+        <br></br>
+        <br></br>
+        <Grid item xs={12} >
+            <NotificationBox/>
         </Grid>
 
     </Grid>
