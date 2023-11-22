@@ -12,12 +12,10 @@ export type DeviceInfo = {
 
 export function DevicesTable(): React.JSX.Element {
     const [devicesList, setDevicesList] = useState([])
-    //TODO: optimize calls (save user ID in local storage or so) - pass it as argument
     useEffect(() => {
         let unmounted = false
         const fetchData = async () => {
-            const responseId = await UserIdService()
-            const response = await UserDeviceListService(responseId.data)
+            const response = await UserDeviceListService(sessionStorage.getItem("userId"))
             setDevicesList(response.data)
         }
         if (unmounted == false) {
@@ -37,8 +35,8 @@ export function DevicesTable(): React.JSX.Element {
                 </TableRow>
             </TableHead>
             <TableBody>
-                {devicesList !== undefined? devicesList.map((device: DeviceInfo) => ( // TODO: handle map error
-                    <TableRow>
+                {devicesList !== undefined? devicesList.map((device: DeviceInfo, index) => ( // TODO: handle map error
+                    <TableRow key={index}>
                         <TableCell>{device.id}</TableCell>
                         <TableCell>{device.description}</TableCell>
                         <TableCell>{device.address}</TableCell>
