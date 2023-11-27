@@ -15,7 +15,6 @@ import { DevicesManagement } from './pages/admin/DevicesManagement';
 import { UserDevicesManagement } from './pages/admin/UserDevicesManagement';
 import { ProtectedRouteAdmin } from './routes/ProtectedRouteAdmin';
 import { ProtectedRouteUser } from './routes/ProtectedRouteUser';
-import { WebSocketProvider } from './components/system/WebSocket';
 
 const router = createBrowserRouter([
   {
