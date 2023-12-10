@@ -11,8 +11,10 @@ export default function ChatBox(): React.JSX.Element {
             stompClientRef.current.disconnect();
         }
 
-        let stomp = Stomp.client(`${CHAT_USERVICE_WEBSOCKET}?name=${sessionStorage.getItem("authUser")}`);
-        stomp.connect({}, () => {
+        let stomp = Stomp.client(`${CHAT_USERVICE_WEBSOCKET}?name=${sessionStorage.getItem("authUser")}&role=${sessionStorage.getItem("role")}`);
+        stomp.connect({
+            Authorization: `${localStorage.getItem("token")}`
+        }, () => {
             stompClientRef.current = stomp;
         });
     }

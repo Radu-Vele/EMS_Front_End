@@ -4,6 +4,7 @@ import { UserDetailsBox } from "../../components/user/UserDetailsBox";
 import { DevicesTable } from "../../components/user/DevicesTable";
 import { NotificationBox } from "../../components/user/NotificationsBox";
 import { ConsumptionChart } from "../../components/user/ConsumptionChart";
+import ChatBox from "../../components/system/ChatBox";
 
 export default function UserHome(): React.JSX.Element {
     const [showDevices, setShowDevices] = useState(false)
@@ -35,6 +36,7 @@ export default function UserHome(): React.JSX.Element {
             </Button>
             <ConsumptionChart visible={showConsumptionChart}/>
         </Grid>
+        <ChatBox />
     </Grid>
     )
 }
