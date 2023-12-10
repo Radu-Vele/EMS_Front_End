@@ -1,5 +1,7 @@
 import { Box, Typography } from "@mui/material";
 import React from "react";
+import ChatBox from "../../components/system/ChatBox";
+import { CHAT_USERVICE_WEBSOCKET } from "../../constants/WebSocketConstants";
 
 export default function AdminHome(): React.JSX.Element {
     return (        
@@ -13,6 +15,7 @@ export default function AdminHome(): React.JSX.Element {
             <Typography variant="h5">
                 Welcome, admin!
             </Typography>
+            <ChatBox />
         </Box>
     )
 }
