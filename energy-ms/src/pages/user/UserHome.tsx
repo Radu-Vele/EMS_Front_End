@@ -36,7 +36,9 @@ export default function UserHome(): React.JSX.Element {
             </Button>
             <ConsumptionChart visible={showConsumptionChart}/>
         </Grid>
-        <ChatBox />
+        <Grid item xs={12}>
+            <ChatBox isUser={true}/>
+        </Grid>
     </Grid>
     )
 }

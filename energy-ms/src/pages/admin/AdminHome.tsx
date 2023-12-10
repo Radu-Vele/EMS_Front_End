@@ -15,7 +15,7 @@ export default function AdminHome(): React.JSX.Element {
             <Typography variant="h5">
                 Welcome, admin!
             </Typography>
-            <ChatBox />
+            <ChatBox isUser={false}/>
         </Box>
     )
 }
