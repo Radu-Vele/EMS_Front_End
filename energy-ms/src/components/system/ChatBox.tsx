@@ -126,6 +126,15 @@ export default function ChatBox(props: ChatBoxProps): React.JSX.Element {
         }
     }
 
+    const formatTimeHhMm = (timestamp) => {
+        const date = new Date(timestamp)
+        const hours = date.getHours()
+        const minutes = date.getMinutes()
+        const paddedHours = hours < 10 ? `0${hours}` : hours;
+        const paddedMin = minutes < 10 ? `0${minutes}` : minutes;
+        return `${paddedHours}:${paddedMin}`
+    }
+
     useEffect(() => {
         listRef.current.scrollTop = listRef.current.scrollHeight;
       }, [inboundMessages, outboundMessages]);
@@ -177,8 +186,8 @@ export default function ChatBox(props: ChatBoxProps): React.JSX.Element {
                                     }}/>
                             </Grid>
                             <Grid item xs={2}>
-                                <ListItemText primary={`[
-                                    ${new Date(message.timestamp).getHours()} : ${new Date(message.timestamp).getMinutes()}]`}/>
+                                <ListItemText primary=
+                                {`[${formatTimeHhMm(message.timestamp)}]`}/>
                             </Grid>
                         </Grid>
                     </ListItemButton>
@@ -199,7 +208,7 @@ export default function ChatBox(props: ChatBoxProps): React.JSX.Element {
                                 <ListItemText primary={message.messageBody} style={{textAlign: (message.type === 'in') ? 'left' : 'right'}}/>
                             </Grid>
                             <Grid item xs={2}>
-                                <ListItemText primary={`[${new Date(message.timestamp).getHours()} : ${new Date(message.timestamp).getMinutes()}]`}/>
+                                <ListItemText primary={`[${formatTimeHhMm(message.timestamp)}]`}/>
                             </Grid>
                         </Grid>
                     </ListItemButton>
