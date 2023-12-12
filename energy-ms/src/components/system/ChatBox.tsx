@@ -17,8 +17,8 @@ export default function ChatBox(props: ChatBoxProps): React.JSX.Element {
     const [isChatInit, setIsChatInit] = useState(false)
     const [isChatVisible, setIsChatVisible] = useState(false)
     const [pairedAdmin, setPairedAdmin] = useState('') // for user
-    const [pairedUserList, setPairedUserList] = useState<PairedUser[]>([]) // for admin
-    const [pairedUser, setPairedUser] = useState<PairedUser>(null) // for user
+    const [pairedUserList, setPairedUserList] = useState<PairedUser[]>([])
+    const [pairedUser, setPairedUser] = useState<number>(-1)
     const [currentlyWrittenMessage, setCurrentlyWrittenMessage] = useState('')
     const [inboundMessages, setInboundMessages] = useState<ChatMessageInMemory[]>([])
     const [outboundMessages, setOutboundMessages] = useState<ChatMessageInMemory[]>([])
@@ -27,6 +27,7 @@ export default function ChatBox(props: ChatBoxProps): React.JSX.Element {
     const listRef = useRef(null);
     const [startTypingEmail, setStartTypingEmail] = useState('')
     const [stopTypingEmail, setStopTypingEmail] = useState('')
+    const [userSocketIsOpen, setUserSocketIsOpen] = useState(false)
 
     const onMessageReceived = (payload: Message) => {
         let receivedMessage: ChatMessage = JSON.parse(payload.body);
@@ -44,6 +45,7 @@ export default function ChatBox(props: ChatBoxProps): React.JSX.Element {
             let stomp = stompClientRef.current;
             stomp.subscribe(`/queue/${sessionStorage.getItem("authUser")}/messages`, onMessageReceived)
             console.log("Successfully subscribed to its own queue")
+            setUserSocketIsOpen(true)
         }
         else {
             console.log("Cannot connect to socket")
@@ -76,6 +78,14 @@ export default function ChatBox(props: ChatBoxProps): React.JSX.Element {
     }
 
     useEffect(() => {
+        if (userSocketIsOpen && props.isUser) {
+            let stompClient: Client = stompClientRef.current
+            stompClient.subscribe(`/startTyping/${pairedUserList[pairedUser].email}`, onStartTyping);
+            stompClient.subscribe(`/stopTyping/${pairedUserList[pairedUser].email}`, onStopTyping);
+        }
+    }, [userSocketIsOpen])
+
+    useEffect(() => {
         if (!props.isUser) {
             socketOpen();
         }
@@ -91,8 +101,12 @@ export default function ChatBox(props: ChatBoxProps): React.JSX.Element {
     const findAnAdmin = async () => {
         let response = await UserChatService();
         if (response.status === 200) {
-            console.log("got admin: ", response.data)
             setPairedAdmin(response.data)
+            setPairedUserList([{
+                email: response.data,
+                isTyping: false
+            }])
+            setPairedUser(0)
         }
         else {
             console.log("no admin available")
@@ -103,14 +117,14 @@ export default function ChatBox(props: ChatBoxProps): React.JSX.Element {
         setIsChatVisible(isChatInit)
         if (isChatInit && props.isUser) {
             socketOpen();
-            (async () => {
-                    await findAnAdmin();
-            })()
+            (async () => { await findAnAdmin();})()
         }
         else {
             if (stompClientRef.current && props.isUser) {
                 stompClientRef.current.deactivate();
                 console.log("Disconnecting from socket")
+                setPairedUserList([]);
+                setPairedUser(-1);
                 setPairedAdmin(null);
                 setInboundMessages([]);
                 setOutboundMessages([]);
@@ -135,7 +149,6 @@ export default function ChatBox(props: ChatBoxProps): React.JSX.Element {
                 let indexOfSubscription = seenSubscriptionList.findIndex(elem => elem.timestamp == receivedSeenNotificationTimestamp)
                 if (indexOfSubscription != -1) {
                     seenSubscriptionList[indexOfSubscription].subscriptionObject.unsubscribe()
-                    console.log("unsubscribed from seen for message ", receivedSeenNotificationTimestamp)
                     let seenSubscriptionListNew = [...seenSubscriptionList]
                     seenSubscriptionList.splice(indexOfSubscription, 1); //remove element
                     setSeenSubscriptionList(seenSubscriptionListNew)
@@ -152,11 +165,13 @@ export default function ChatBox(props: ChatBoxProps): React.JSX.Element {
                 messageBody: currentlyWrittenMessage,
                 timestamp: new Date().getTime()
             }
+
             let stompClient: Client = stompClientRef.current
             stompClient.publish({
                 destination: '/app/chat',
                 body: JSON.stringify(message)
             })
+            
             setOutboundMessages(state => [...state, {
                 ...message,
                 readByMe: false,
@@ -164,8 +179,8 @@ export default function ChatBox(props: ChatBoxProps): React.JSX.Element {
                 direction: MessageDirection.out
             }])
             setCurrentlyWrittenMessage('')
+            
             let subscription = stompClient.subscribe(`/seen/${message.timestamp}`, onSeenNotificationReceive)
-
             let subscriptionListItem = {
                 subscriptionObject: subscription,
                 timestamp: message.timestamp
@@ -177,7 +192,7 @@ export default function ChatBox(props: ChatBoxProps): React.JSX.Element {
         }
     }
 
-    const formatTimeHhMm = (timestamp) => {
+    const formatTimeHhMm = (timestamp) => { // TODO: move to utils
         const date = new Date(timestamp)
         const hours = date.getHours()
         const minutes = date.getMinutes()
@@ -186,27 +201,29 @@ export default function ChatBox(props: ChatBoxProps): React.JSX.Element {
         return `${paddedHours}:${paddedMin}`
     }
 
-    useEffect(() => {
+    useEffect(() => { // maintain the scroll to bottom of messages list
         listRef.current.scrollTop = listRef.current.scrollHeight;
       }, [inboundMessages, outboundMessages]);
     
     const onStartTyping = (payload: Message) => {
-        let pairedUserEmail = JSON.parse(payload.body).senderEmailAddress;
-        console.log("received start typing notification")
-        setStartTypingEmail(pairedUserEmail);
-        setStopTypingEmail('')
+        if (JSON.parse(payload.body).receiverEmailAddress === sessionStorage.getItem("authUser")) {
+            let pairedUserEmail = JSON.parse(payload.body).senderEmailAddress;
+            setStartTypingEmail(pairedUserEmail);
+            setStopTypingEmail('')
+        }
     }
 
     const onStopTyping = (payload: Message) => {
-        let pairedUserEmail = JSON.parse(payload.body).senderEmailAddress;
-        console.log("received stop typing notification", pairedUserEmail)
-        setStartTypingEmail('')
-        setStopTypingEmail(pairedUserEmail);
+        if (JSON.parse(payload.body).receiverEmailAddress === sessionStorage.getItem("authUser")) {
+            let pairedUserEmail = JSON.parse(payload.body).senderEmailAddress;
+            setStartTypingEmail('')
+            setStopTypingEmail(pairedUserEmail);
+        }
     }
 
     useEffect(() => {
         if (startTypingEmail !== '') {
-            let newPairedUserList = pairedUserList.map((element) => {
+            let newPairedUserList = pairedUserList.map((element) => { // check if the user typing is in the paired user list, and if so set that they are typing
                 if (element.email === startTypingEmail) {
                     return {...element, isTyping: true}
                 }
@@ -256,7 +273,8 @@ export default function ChatBox(props: ChatBoxProps): React.JSX.Element {
             if (stompClient.connected) {
                 let myEmailAddress = sessionStorage.getItem("authUser")
                 let message = {
-                    senderEmailAddress: myEmailAddress
+                    senderEmailAddress: myEmailAddress,
+                    receiverEmailAddress: pairedUserList[pairedUser].email
                 }
                 let destination = ''
                 if (currentlyWrittenMessage === '') {
@@ -269,7 +287,6 @@ export default function ChatBox(props: ChatBoxProps): React.JSX.Element {
                     destination: destination, 
                     body: JSON.stringify(message)
                 })
-                console.log("published to", stompClient, destination)
             }
         }
     }, [currentlyWrittenMessage]);
@@ -298,12 +315,10 @@ export default function ChatBox(props: ChatBoxProps): React.JSX.Element {
                 destination: '/app/seen',
                 body: JSON.stringify(seenNotification)
         })
-
-        console.log("Sent seen notification", JSON.stringify(seenNotification));
     }
 
     const renderMessages = () => {
-        if (!props.isUser && !pairedUser) {
+        if (!props.isUser && pairedUser === -1) {
             return (
             <ListItem
                 key={0}
@@ -318,57 +333,55 @@ export default function ChatBox(props: ChatBoxProps): React.JSX.Element {
         
         let finalMessagesArray = allMessagesByTimestamp
 
-        if (!props.isUser && pairedUser) {
+        if (!props.isUser) { // admin with one selected user
             let filteredMessagesByUser = allMessagesByTimestamp.filter(m => {
-                return (m.senderEmailAddress === pairedUser.email || m.receiverEmailAddress === pairedUser.email)
+                return (
+                    m.senderEmailAddress === pairedUserList[pairedUser].email || m.receiverEmailAddress === pairedUserList[pairedUser].email
+                )
             })
             finalMessagesArray = filteredMessagesByUser
-            
         }
 
         return finalMessagesArray.map((message: ChatMessageInMemory) => {
             return(
-                <>
-                    <ListItemButton
-                        key={message.timestamp}
-                        onClick={(event) => markAsSeen(event, message.timestamp)}
-                        style = {{
-                            background: (message.direction == MessageDirection.in && message.readByMe == false) ? 'lightGray' : 'none'
-                        }}
-                    >
-                        <Grid container spacing={2}>
-                            <Grid item xs={10}>
-                                <ListItemText primary={message.messageBody} style={{
-                                        textAlign: (message.direction == MessageDirection.in) ? 'left' : 'right',
-                                    }}/>
-                                
-                            </Grid>
-                            <Grid item xs={2}>
-                                {message.direction == MessageDirection.out && 
-                                        <ListItemIcon 
-                                        style={{
-                                            textAlign: 'right',
-                                            color: message.readByThem ? 'green' : 'none'
-                                        }}>
-                                            <VisibilityIcon />
-                                        </ListItemIcon>
-                                }
-                                <ListItemText primary={`[${formatTimeHhMm(message.timestamp)}]`}/>
-                            </Grid>
+                <ListItemButton
+                    key={message.timestamp}
+                    onClick={(event) => markAsSeen(event, message.timestamp)}
+                    style = {{
+                        background: (message.direction == MessageDirection.in && message.readByMe == false) ? 'lightGray' : 'none'
+                    }}
+                >
+                    <Grid container spacing={2}>
+                        <Grid item xs={10}>
+                            <ListItemText primary={message.messageBody} style={{
+                                    textAlign: (message.direction == MessageDirection.in) ? 'left' : 'right',
+                                }}/>
+                            
                         </Grid>
-                    </ListItemButton>
+                        <Grid item xs={2}>
+                            {message.direction == MessageDirection.out && 
+                                    <ListItemIcon 
+                                    style={{
+                                        textAlign: 'right',
+                                        color: message.readByThem ? 'green' : 'none'
+                                    }}>
+                                        <VisibilityIcon />
+                                    </ListItemIcon>
+                            }
+                            <ListItemText primary={`[${formatTimeHhMm(message.timestamp)}]`}/>
+                        </Grid>
+                    </Grid>
                     <Divider />
-                </>
+                </ListItemButton>
             )
         })
         
     }
 
     const renderPairedUserOptions = () => {
-        return pairedUserList.map(user => {
-            console.log(user)
+        return pairedUserList.map((user, index) => {
             return (
-               <MenuItem key={user.email as string} value={user.email as string}>
+               <MenuItem key={index} value={user.email as string}>
                 {user.email}
                </MenuItem>
             )
@@ -396,9 +409,19 @@ export default function ChatBox(props: ChatBoxProps): React.JSX.Element {
                 {props.isUser ? 
                 <>
                     <Grid item xs={10}>
-                        <Typography>
-                            Chat with admin: {pairedAdmin ? pairedAdmin: 'No admin online. You\'re on your own, bro'}
-                        </Typography>
+                        <Grid container>
+                            <Grid item xs={10}>
+                                <Typography>
+                                    Chat with admin: {pairedUser === -1 ? 'No admin online. You\'re on your own, bro' : pairedUserList[pairedUser].email}
+                                </Typography>
+                            </Grid>
+                            <Grid item xs={2}>
+                                {pairedUser !== -1 && <Typography color='primary' fontStyle='italic'>
+                                    {pairedUserList[pairedUser].isTyping && <>Typing...</>}
+                                </Typography>
+                                }
+                            </Grid>
+                        </Grid>
                     </Grid>
                     <Grid item xs={12} style={{ overflow: 'auto', maxHeight: '150px'}} ref={listRef}>
                         <List ref={listRef} dense>
@@ -424,17 +447,19 @@ export default function ChatBox(props: ChatBoxProps): React.JSX.Element {
                             <InputLabel id="label">Talk to...</InputLabel>
                             <Select
                                 labelId="label"
-                                value={pairedUser? pairedUser.email : ''}
+                                value={pairedUser !== -1 ? pairedUserList[pairedUser].email : ''}
                                 label="Talk to..."
-                                onChange={(e) => {setPairedUser(pairedUserList.find(el => el.email === e.target.value))}}
+                                onChange={(e) => {
+                                    setPairedUser(pairedUserList.findIndex(el => el.email === e.target.value))
+                                }}
                             >
                                 {renderPairedUserOptions()}
                             </Select>
-                        </FormControl>     
+                        </FormControl>
                     </Grid>
                     <Grid item xs={3}>
-                        {pairedUser && <Typography>
-                            {pairedUser.isTyping && <>Typing...</>}
+                        {pairedUser !== -1 && <Typography color='primary' fontStyle='italic'>
+                            {pairedUserList[pairedUser].isTyping && <>Typing...</>}
                         </Typography>
                         }
                     </Grid>
@@ -452,7 +477,7 @@ export default function ChatBox(props: ChatBoxProps): React.JSX.Element {
                             />                    
                         </Grid>
                         <Grid item xs = {2}>
-                        <Button variant="contained" onClick={() => sendMessage(pairedUser.email)}>Send</Button>
+                        <Button variant="contained" onClick={() => sendMessage(pairedUserList[pairedUser].email)}>Send</Button>
                     </Grid>
                 </>
                 }
