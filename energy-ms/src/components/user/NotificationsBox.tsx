@@ -8,8 +8,8 @@ export function NotificationBox(): React.JSX.Element {
     const [visible, setVisible] = useState(false)
     const { lastMessage } = useWebSocket(
         `${MEASUREMENTS_USERVICE_WEBSOCKET}?userId=${sessionStorage.getItem("userId")}`, {
-            share: true,
-            shouldReconnect: (closeEvent) => true
+            share: true,            
+            shouldReconnect: (closeEvent) => true,
         }
     )
 

@@ -1,6 +1,6 @@
 import { CREATE_DEVICE } from "../../../constants/DevicesRequestEndpoints";
 import { AxiosResponse } from "axios";
-import { axiosDevicesInstance } from "../../axiosConfig/AxiosDevicesConfig";
+import axiosDevicesInstance from "../../axiosConfig/AxiosDevicesConfig";
 
 export const  DeviceCreateService = async (deviceInfo): Promise<AxiosResponse>  => {    
     return axiosDevicesInstance.post(CREATE_DEVICE, deviceInfo)

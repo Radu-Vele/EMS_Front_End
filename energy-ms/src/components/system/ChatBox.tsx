@@ -65,8 +65,7 @@ export default function ChatBox(props: ChatBoxProps): React.JSX.Element {
         let stomp = new Client({  
             brokerURL: `${CHAT_USERVICE_WEBSOCKET}?name=${sessionStorage.getItem("authUser")}&role=${sessionStorage.getItem("role")}`,
             connectHeaders: {
-                login: 'dummy',
-                passcode: 'dummy',
+                authorization: localStorage.getItem("token")
             },
             reconnectDelay: 5000,
         }); 

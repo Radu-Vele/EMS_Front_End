@@ -6,6 +6,7 @@ const axiosMeasurementsInstance = axios.create({
 })
 
 axiosMeasurementsInstance.interceptors.request.use((config: InternalAxiosRequestConfig) => {
+    config.headers["Authorization"] = localStorage.getItem("token")
     return config
 })
 
