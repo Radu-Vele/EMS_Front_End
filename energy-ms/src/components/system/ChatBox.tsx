@@ -77,7 +77,7 @@ export default function ChatBox(props: ChatBoxProps): React.JSX.Element {
     }
 
     useEffect(() => {
-        if (userSocketIsOpen && props.isUser) {
+        if (userSocketIsOpen && props.isUser && pairedUser !== -1) {
             let stompClient: Client = stompClientRef.current
             stompClient.subscribe(`/startTyping/${pairedUserList[pairedUser].email}`, onStartTyping);
             stompClient.subscribe(`/stopTyping/${pairedUserList[pairedUser].email}`, onStopTyping);
@@ -108,6 +108,7 @@ export default function ChatBox(props: ChatBoxProps): React.JSX.Element {
             setPairedUser(0)
         }
         else {
+            setPairedUser(-1)
             console.log("no admin available")
         }
     }
