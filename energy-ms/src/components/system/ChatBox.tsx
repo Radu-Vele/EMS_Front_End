@@ -68,7 +68,7 @@ export default function ChatBox(props: ChatBoxProps): React.JSX.Element {
                 authorization: localStorage.getItem("token")
             },
             reconnectDelay: 5000,
-        }); 
+        });
 
         stomp.onConnect = onConnect
         stomp.onStompError = onError
